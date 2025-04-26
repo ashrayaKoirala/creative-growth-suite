@@ -1,246 +1,232 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { motion } from 'framer-motion';
-import { Calendar, CircleCheckBig, Clock, DollarSign, TrendingUp, Video, Zap } from 'lucide-react';
+
+"use client"
+
+import { motion } from "framer-motion"
+import { ArrowUpRight, BarChart3, Clock, FileText, PlusCircle } from "lucide-react"
+import { Link } from "react-router-dom"
 
 const Dashboard = () => {
-  // Mock data
-  const kpiData = [
-    { name: 'Jan', views: 400, subs: 240 },
-    { name: 'Feb', views: 300, subs: 139 },
-    { name: 'Mar', views: 200, subs: 980 },
-    { name: 'Apr', views: 278, subs: 390 },
-    { name: 'May', views: 189, subs: 480 },
-    { name: 'Jun', views: 239, subs: 380 },
-    { name: 'Jul', views: 349, subs: 430 },
-  ];
+  // Sample data for dashboard
+  const kpiData = {
+    subscribers: "12.4K",
+    views: "89.7K",
+    revenue: "$1,245",
+    growth: "+12%",
+  }
 
   const tasks = [
-    { id: 1, title: 'Edit Q3 Vlog', priority: 'high', due: 'Today' },
-    { id: 2, title: 'Record Podcast', priority: 'medium', due: 'Tomorrow' },
-    { id: 3, title: 'Review Analytics', priority: 'low', due: 'Today' },
-  ];
+    { id: 1, title: "Edit weekly vlog", priority: "high", due: "Today" },
+    { id: 2, title: "Script podcast episode", priority: "medium", due: "Tomorrow" },
+    { id: 3, title: "Record tutorial intro", priority: "low", due: "May 2" },
+  ]
 
-  const contentStatus = [
-    { id: 1, title: 'Channel Announcement', stage: 'Upload', progress: 95 },
-    { id: 2, title: 'Tutorial Series', stage: 'Edit', progress: 60 },
-    { id: 3, title: 'Podcast Episode #8', stage: 'Record', progress: 30 },
-  ];
+  const recentFiles = [
+    { id: 1, name: "Podcast_Ep45_Final.mp4", type: "video", date: "Yesterday" },
+    { id: 2, name: "Tutorial_Cuts.json", type: "cut-profile", date: "Apr 24" },
+    { id: 3, name: "Stream_Highlights.mp4", type: "video", date: "Apr 22" },
+  ]
 
+  // Animation variants
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
+        staggerChildren: 0.05,
+      },
+    },
+  }
 
   const item = {
     hidden: { y: 20, opacity: 0 },
-    show: { y: 0, opacity: 1 }
-  };
+    show: { y: 0, opacity: 1 },
+  }
 
   return (
-    <motion.div 
-      className="space-y-6"
-      variants={container}
-      initial="hidden"
-      animate="show"
-    >
-      <motion.div variants={item}>
-        <h1 className="text-3xl font-bold font-mono mb-1">Dashboard</h1>
-        <p className="text-gray-600 mb-6">Welcome back. Here's your overview.</p>
-      </motion.div>
-
-      {/* Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* KPI Chart */}
-        <motion.div 
-          variants={item}
-          className="lg:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm p-6 relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-black opacity-[0.02] pointer-events-none" />
-          <h2 className="text-xl font-semibold font-mono mb-4 flex items-center">
-            <TrendingUp size={20} className="mr-2" />
-            Channel Performance
-          </h2>
-          <div className="h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={kpiData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'white', 
-                    border: '1px solid #e0e0e0',
-                    borderRadius: '4px'
-                  }} 
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="views" 
-                  stroke="#000" 
-                  strokeWidth={2} 
-                  dot={{ fill: '#000', r: 4 }}
-                  activeDot={{ r: 6 }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="subs" 
-                  stroke="#555" 
-                  strokeWidth={2} 
-                  dot={{ fill: '#555', r: 4 }}
-                  activeDot={{ r: 6 }}
-                  strokeDasharray="5 5"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+    <motion.div variants={container} initial="hidden" animate="show" className="space-y-8">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <motion.div variants={item}>
+          <h1 className="text-3xl font-bold font-mono mb-1">Dashboard</h1>
+          <p className="text-gray-600">Welcome to your content command center.</p>
         </motion.div>
-
-        {/* Financial Summary */}
-        <motion.div 
-          variants={item}
-          className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-black opacity-[0.02] pointer-events-none" />
-          <h2 className="text-xl font-semibold font-mono mb-4 flex items-center">
-            <DollarSign size={20} className="mr-2" />
-            Financial Snapshot
-          </h2>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center p-3 border-b border-gray-100">
-              <span className="text-gray-600">Revenue (MTD)</span>
-              <span className="font-semibold">$4,285.00</span>
-            </div>
-            <div className="flex justify-between items-center p-3 border-b border-gray-100">
-              <span className="text-gray-600">Expenses (MTD)</span>
-              <span className="font-semibold">$1,470.00</span>
-            </div>
-            <div className="flex justify-between items-center p-3 bg-gray-50 rounded">
-              <span className="font-semibold">Net Profit</span>
-              <span className="font-semibold text-xl">$2,815.00</span>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Today's Tasks */}
-        <motion.div 
-          variants={item}
-          className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-black opacity-[0.02] pointer-events-none" />
-          <h2 className="text-xl font-semibold font-mono mb-4 flex items-center">
-            <Calendar size={20} className="mr-2" />
-            Today's Tasks
-          </h2>
-          <div className="space-y-3">
-            {tasks.map(task => (
-              <div 
-                key={task.id}
-                className="flex items-center p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div 
-                  className={`w-2 h-2 rounded-full mr-3 ${
-                    task.priority === 'high' ? 'bg-black' : 
-                    task.priority === 'medium' ? 'bg-gray-500' : 'bg-gray-300'
-                  }`}
-                />
-                <span className="flex-1">{task.title}</span>
-                <span className="text-xs text-gray-500">{task.due}</span>
-              </div>
-            ))}
-            <button className="w-full mt-3 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-50 transition-colors">
-              View All Tasks
-            </button>
-          </div>
-        </motion.div>
-
-        {/* Work Timer */}
-        <motion.div 
-          variants={item}
-          className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-black opacity-[0.02] pointer-events-none" />
-          <h2 className="text-xl font-semibold font-mono mb-4 flex items-center">
-            <Clock size={20} className="mr-2" />
-            Work Timer
-          </h2>
-          <div className="flex flex-col items-center justify-center h-[180px]">
-            <div className="text-4xl font-mono font-bold mb-6">00:00:00</div>
-            <div className="flex space-x-3">
-              <button className="py-2 px-4 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors">
-                Start Session
-              </button>
-              <button className="py-2 px-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                History
-              </button>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Content Production Tracker */}
-        <motion.div 
-          variants={item}
-          className="lg:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm p-6 relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-black opacity-[0.02] pointer-events-none" />
-          <h2 className="text-xl font-semibold font-mono mb-4 flex items-center">
-            <Video size={20} className="mr-2" />
-            Content Production
-          </h2>
-          <div className="space-y-4">
-            {contentStatus.map(content => (
-              <div key={content.id} className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">{content.title}</span>
-                  <span className="text-sm text-gray-500">{content.stage}</span>
-                </div>
-                <div className="w-full bg-gray-100 rounded-full h-2">
-                  <div 
-                    className="bg-black h-2 rounded-full" 
-                    style={{ width: `${content.progress}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Quick Access */}
-        <motion.div 
-          variants={item}
-          className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-black opacity-[0.02] pointer-events-none" />
-          <h2 className="text-xl font-semibold font-mono mb-4 flex items-center">
-            <Zap size={20} className="mr-2" />
-            Quick Access
-          </h2>
-          <div className="grid grid-cols-2 gap-3">
-            <button className="p-4 border border-gray-200 rounded-lg flex flex-col items-center justify-center hover:bg-gray-50 transition-colors">
-              <Video size={24} className="mb-2" />
-              <span className="text-sm">New Video</span>
-            </button>
-            <button className="p-4 border border-gray-200 rounded-lg flex flex-col items-center justify-center hover:bg-gray-50 transition-colors">
-              <DollarSign size={24} className="mb-2" />
-              <span className="text-sm">Expenses</span>
-            </button>
-            <button className="p-4 border border-gray-200 rounded-lg flex flex-col items-center justify-center hover:bg-gray-50 transition-colors">
-              <Calendar size={24} className="mb-2" />
-              <span className="text-sm">Schedule</span>
-            </button>
-            <button className="p-4 border border-gray-200 rounded-lg flex flex-col items-center justify-center hover:bg-gray-50 transition-colors">
-              <CircleCheckBig size={24} className="mb-2" />
-              <span className="text-sm">New Task</span>
-            </button>
-          </div>
+        <motion.div variants={item} className="flex gap-3">
+          <Link
+            to="/tasks"
+            className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            <PlusCircle size={18} />
+            <span>New Task</span>
+          </Link>
+          <Link
+            to="/tasks/work-timer"
+            className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <Clock size={18} />
+            <span>Start Timer</span>
+          </Link>
         </motion.div>
       </div>
-    </motion.div>
-  );
-};
 
-export default Dashboard;
+      {/* KPI Section */}
+      <motion.section variants={item} className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <motion.div
+          whileHover={{ y: -4 }}
+          className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm"
+        >
+          <h3 className="text-sm font-medium text-gray-500 mb-1">Subscribers</h3>
+          <p className="text-2xl font-bold font-mono">{kpiData.subscribers}</p>
+          <span className="text-xs text-green-600 font-medium">{kpiData.growth} this month</span>
+        </motion.div>
+        <motion.div
+          whileHover={{ y: -4 }}
+          className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm"
+        >
+          <h3 className="text-sm font-medium text-gray-500 mb-1">Views</h3>
+          <p className="text-2xl font-bold font-mono">{kpiData.views}</p>
+          <span className="text-xs text-green-600 font-medium">+8% this month</span>
+        </motion.div>
+        <motion.div
+          whileHover={{ y: -4 }}
+          className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm"
+        >
+          <h3 className="text-sm font-medium text-gray-500 mb-1">Revenue</h3>
+          <p className="text-2xl font-bold font-mono">{kpiData.revenue}</p>
+          <span className="text-xs text-green-600 font-medium">+15% this month</span>
+        </motion.div>
+        <motion.div
+          whileHover={{ y: -4 }}
+          className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm"
+        >
+          <h3 className="text-sm font-medium text-gray-500 mb-1">Avg. Watch Time</h3>
+          <p className="text-2xl font-bold font-mono">4:32</p>
+          <span className="text-xs text-green-600 font-medium">+2% this month</span>
+        </motion.div>
+      </motion.section>
+
+      {/* Quick Access Sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Tasks */}
+        <motion.section variants={item}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold font-mono">Today's Tasks</h2>
+            <Link to="/tasks" className="text-sm flex items-center hover:underline">
+              View all <ArrowUpRight size={14} className="ml-1" />
+            </Link>
+          </div>
+          <div className="space-y-3">
+            {tasks.map((task) => (
+              <motion.div
+                key={task.id}
+                whileHover={{ x: 4 }}
+                className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      task.priority === "high"
+                        ? "bg-red-500"
+                        : task.priority === "medium"
+                        ? "bg-yellow-500"
+                        : "bg-green-500"
+                    }`}
+                  ></div>
+                  <span>{task.title}</span>
+                </div>
+                <span className="text-sm text-gray-500">{task.due}</span>
+              </motion.div>
+            ))}
+            <Link
+              to="/tasks"
+              className="flex items-center justify-center w-full p-2 border border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:bg-gray-50 transition-colors"
+            >
+              <PlusCircle size={14} className="mr-2" /> Add task
+            </Link>
+          </div>
+        </motion.section>
+
+        {/* Recent Files */}
+        <motion.section variants={item}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold font-mono">Recent Files</h2>
+            <Link to="/files" className="text-sm flex items-center hover:underline">
+              View all <ArrowUpRight size={14} className="ml-1" />
+            </Link>
+          </div>
+          <div className="space-y-3">
+            {recentFiles.map((file) => (
+              <motion.div
+                key={file.id}
+                whileHover={{ x: 4 }}
+                className="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-8 h-8 rounded flex items-center justify-center ${
+                      file.type === "video" ? "bg-blue-100" : "bg-green-100"
+                    }`}
+                  >
+                    <FileText size={14} />
+                  </div>
+                  <span>{file.name}</span>
+                </div>
+                <span className="text-sm text-gray-500">{file.date}</span>
+              </motion.div>
+            ))}
+            <Link
+              to="/files"
+              className="flex items-center justify-center w-full p-2 border border-dashed border-gray-300 rounded-lg text-sm text-gray-500 hover:bg-gray-50 transition-colors"
+            >
+              <PlusCircle size={14} className="mr-2" /> Upload file
+            </Link>
+          </div>
+        </motion.section>
+
+        {/* Analytics Preview */}
+        <motion.section variants={item}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold font-mono">Analytics</h2>
+            <Link to="/dashboard/kpis" className="text-sm flex items-center hover:underline">
+              Full report <ArrowUpRight size={14} className="ml-1" />
+            </Link>
+          </div>
+          <div className="p-4 bg-white border border-gray-200 rounded-lg h-[150px] flex items-center justify-center">
+            <div className="flex flex-col items-center justify-center text-center">
+              <BarChart3 size={32} className="mb-2 text-gray-400" />
+              <p className="text-sm text-gray-500">View detailed analytics in the KPI dashboard</p>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Work Sessions */}
+        <motion.section variants={item}>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold font-mono">Recent Work Sessions</h2>
+            <Link to="/dashboard/sessions" className="text-sm flex items-center hover:underline">
+              View all <ArrowUpRight size={14} className="ml-1" />
+            </Link>
+          </div>
+          <div className="p-4 bg-white border border-gray-200 rounded-lg">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Video Editing Session</p>
+                  <p className="text-sm text-gray-500">2 hours 15 minutes</p>
+                </div>
+                <span className="text-sm text-gray-500">Today</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Script Writing</p>
+                  <p className="text-sm text-gray-500">45 minutes</p>
+                </div>
+                <span className="text-sm text-gray-500">Yesterday</span>
+              </div>
+            </div>
+          </div>
+        </motion.section>
+      </div>
+    </motion.div>
+  )
+}
+
+export default Dashboard
