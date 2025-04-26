@@ -1,4 +1,3 @@
-
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
 
@@ -79,54 +78,54 @@ export default defineConfig({
             attrs: { type: "module" },
             injectTo: "head",
             children: `
-            // Report any logs, errors, etc to the parent mocha app context to include in
-            // the bottom panel.
-            for (const method of ['log', 'debug', 'info', 'error', 'warn']) {
-              const originalFn = console[method];
-              console[method] = function(...args) {
-                window.parent.postMessage({ type: 'console', method, args: args.map(a => \`\${a}\`) }, '*');
-                return originalFn(...args);
+              // Report any logs, errors, etc to the parent mocha app context to include in
+              // the bottom panel.
+              for (const method of ['log', 'debug', 'info', 'error', 'warn']) {
+                const originalFn = console[method];
+                console[method] = function(...args) {
+                  window.parent.postMessage({ type: 'console', method, args: args.map(a => \`\${a}\`) }, '*');
+                  return originalFn(...args);
+                };
+              }
+
+              // Report any thrown errors / promise rejections so they show up in the logs
+              window.addEventListener('error', (e) => {
+                if (window.parent) {
+                  window.parent.postMessage({ type: 'error', stack: e.error.stack }, '*');
+                }
+              });
+              window.addEventListener('unhandledrejection', (e) => {
+                if (window.parent) {
+                  window.parent.postMessage({ type: 'unhandledrejection', reason: e.reason }, '*');
+                }
+              });
+
+              // Report URL change event from iframe
+              const originalPushState = history.pushState;
+              const originalReplaceState = history.replaceState;
+
+              const notifyParent = () => {
+                window.parent.postMessage({ type: 'iframe_url_changed', url: window.location.href }, '*');
               };
-            }
 
-            // Report any thrown errors / promise rejections so they show up in the logs
-            window.addEventListener('error', (e) => {
-              if (window.parent) {
-                window.parent.postMessage({ type: 'error', stack: e.error.stack }, '*');
-              }
-            });
-            window.addEventListener('unhandledrejection', (e) => {
-              if (window.parent) {
-                window.parent.postMessage({ type: 'unhandledrejection', reason: e.reason }, '*');
-              }
-            });
+              history.pushState = function (...args) {
+                originalPushState.apply(this, args);
+                notifyParent();
+              };
 
-            // Report URL change event from iframe
-            const originalPushState = history.pushState;
-            const originalReplaceState = history.replaceState;
+              history.replaceState = function (...args) {
+                originalReplaceState.apply(this, args);
+                notifyParent();
+              };
 
-            const notifyParent = () => {
-              window.parent.postMessage({ type: 'iframe_url_changed', url: window.location.href }, '*');
-            };
-
-            history.pushState = function (...args) {
-              originalPushState.apply(this, args);
-              notifyParent();
-            };
-
-            history.replaceState = function (...args) {
-              originalReplaceState.apply(this, args);
-              notifyParent();
-            };
-
-            window.addEventListener('popstate', notifyParent);
-            window.addEventListener('hashchange', notifyParent);
-          `,
+              window.addEventListener('popstate', notifyParent);
+              window.addEventListener('hashchange', notifyParent);
+            `,
           },
         ]
       },
 
-      transform(src: string, id: string) {
+      transform(src, id) {
         if (id === "/app/src/main.tsx") {
           return `
             ${src}
